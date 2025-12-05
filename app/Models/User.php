@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'slug',
     ];
 
     /**
@@ -44,5 +46,27 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function skill()
+    {
+        return $this->hasOne(Skill::class);
+    }
+
+    // Relasi: 1 User punya banyak Project
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    // Relasi: 1 User punya banyak Certificate
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    public function assessmentSubmissions()
+    {
+        return $this->hasMany(AssessmentSubmission::class);
     }
 }
