@@ -35,7 +35,7 @@
                         </div>
 
                         {{-- Logout Form (Laravel Security Best Practice) --}}
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('user.logout') }}">
                             @csrf
                             <button type="submit" class="text-slate-300 hover:text-white hover:bg-red-500/10 hover:border-red-500/50 border border-transparent px-4 py-2 rounded-full text-sm font-medium transition-all duration-300">
                                 Logout
@@ -73,7 +73,7 @@
 
                 @auth
                     @if(Auth::user()->role !== 'admin')
-                        <li><x-nav-link href="{{ url('/assessment') }}" :active="request()->is('assessment*')">Assessment</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('user.assessment.index') }}" :active="request()->is('assessment*')">Assessment</x-nav-link></li>
                         <li><x-nav-link href="{{ route('user.portfolio.index') }}" :active="request()->is('portfolio*')">Portfolio</x-nav-link></li>
                         <li><x-nav-link href="{{ url('/upload') }}" :active="request()->is('upload*')">Upload</x-nav-link></li>
                         <li><x-nav-link href="{{ url('/analytics') }}" :active="request()->is('analytics*')">Analytics</x-nav-link></li>
@@ -96,7 +96,7 @@
 
                 @auth
                     @if(Auth::user()->role !== 'admin')
-                        <li><x-nav-link href="{{ url('/assessment') }}" :active="request()->is('assessment*')" @click="mobileMenuOpen = false">Skill Assessment</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('user.assessment.index') }}" :active="request()->is('assessment*')" @click="mobileMenuOpen = false">Skill Assessment</x-nav-link></li>
                         <li><x-nav-link href="{{ route('user.portfolio.index') }}" :active="request()->is('portfolio*')" @click="mobileMenuOpen = false">My Portfolio</x-nav-link></li>
                         <li><x-nav-link href="{{ url('/upload') }}" :active="request()->is('upload*')" @click="mobileMenuOpen = false">Upload Project</x-nav-link></li>
                         <li><x-nav-link href="{{ url('/analytics') }}" :active="request()->is('analytics*')" @click="mobileMenuOpen = false">Analytics</x-nav-link></li>
@@ -112,7 +112,7 @@
                                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500"></div>
                                 <span class="text-white font-semibold">{{ Auth::user()->name }}</span>
                             </div>
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('user.logout') }}">
                                 @csrf
                                 <button type="submit" class="w-full text-center py-3 bg-red-500/10 text-red-400 rounded-xl font-semibold border border-red-500/20 hover:bg-red-500/20 transition">
                                     Logout

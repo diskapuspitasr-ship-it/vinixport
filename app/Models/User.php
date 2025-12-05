@@ -23,6 +23,9 @@ class User extends Authenticatable
         'password',
         'role',
         'slug',
+        'bio',
+        'jabatan',
+        'avatar_url',
     ];
 
     /**

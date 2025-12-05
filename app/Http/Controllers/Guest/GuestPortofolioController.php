@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class UserPortofolioController extends Controller
+class GuestPortofolioController extends Controller
 {
-    public function index() {
-        // 1. Eager Load Relasi
+    public function index(string $slug)
+    {
         $user = User::with(['skill', 'projects', 'certificates', 'assessmentSubmissions.assessment'])
-                    ->find(Auth::id());
+            ->where('slug', '=', $slug)
+            ->firstOrFail();
 
-        // ==========================================
-        // BAGIAN 1 & 2: CHART DATA & ASSESSMENT LIST
-        // ==========================================
         $chartData = [
             'Soft Skills' => 0,
             'Workplace Readiness' => 0,
@@ -50,21 +47,29 @@ class UserPortofolioController extends Controller
                 $scoreClass = 'bg-slate-500/10 text-slate-400 border-slate-500/20';
 
                 if ($percentage >= 80) {
-                    $colorClass = "text-emerald-400";
-                    $scoreClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
-                    if ($label === 'Soft Skills') $feedback = "Kemampuan komunikasi dan interpersonal sangat baik.";
-                    elseif ($label === 'Digital Skills') $feedback = "Sangat mahir dalam ekosistem digital.";
-                    elseif ($label === 'Workplace Readiness') $feedback = "Mentalitas profesional sangat matang.";
-                } else if ($percentage >= 60) {
-                    $colorClass = "text-amber-400";
-                    $scoreClass = "bg-amber-500/10 text-amber-400 border-amber-500/20";
-                    if ($label === 'Soft Skills') $feedback = "Interaksi cukup baik, tingkatkan negosiasi.";
-                    elseif ($label === 'Digital Skills') $feedback = "Cukup familiar dengan teknologi dasar.";
-                    elseif ($label === 'Workplace Readiness') $feedback = "Etos kerja terbentuk, tingkatkan inisiatif.";
+                    $colorClass = 'text-emerald-400';
+                    $scoreClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+                    if ($label === 'Soft Skills') {
+                        $feedback = 'Kemampuan komunikasi dan interpersonal sangat baik.';
+                    } elseif ($label === 'Digital Skills') {
+                        $feedback = 'Sangat mahir dalam ekosistem digital.';
+                    } elseif ($label === 'Workplace Readiness') {
+                        $feedback = 'Mentalitas profesional sangat matang.';
+                    }
+                } elseif ($percentage >= 60) {
+                    $colorClass = 'text-amber-400';
+                    $scoreClass = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+                    if ($label === 'Soft Skills') {
+                        $feedback = 'Interaksi cukup baik, tingkatkan negosiasi.';
+                    } elseif ($label === 'Digital Skills') {
+                        $feedback = 'Cukup familiar dengan teknologi dasar.';
+                    } elseif ($label === 'Workplace Readiness') {
+                        $feedback = 'Etos kerja terbentuk, tingkatkan inisiatif.';
+                    }
                 } else {
-                    $colorClass = "text-red-400";
-                    $scoreClass = "bg-red-500/10 text-red-400 border-red-500/20";
-                    $feedback = "Perlu pengembangan lebih lanjut.";
+                    $colorClass = 'text-red-400';
+                    $scoreClass = 'bg-red-500/10 text-red-400 border-red-500/20';
+                    $feedback = 'Perlu pengembangan lebih lanjut.';
                 }
 
                 $assessmentDetails[] = (object) [
@@ -72,7 +77,7 @@ class UserPortofolioController extends Controller
                     'score' => $percentage,
                     'feedback' => $feedback,
                     'colorClass' => $colorClass,
-                    'scoreClass' => $scoreClass
+                    'scoreClass' => $scoreClass,
                 ];
             }
         }
@@ -89,19 +94,19 @@ class UserPortofolioController extends Controller
                 $skill = (array) $skillItem;
                 $technicalSkills[] = (object) [
                     'name' => $skill['skill_name'] ?? 'Unknown',
-                    'level' => $skill['level'] ?? 'Beginner'
+                    'level' => $skill['level'] ?? 'Beginner',
                 ];
             }
         }
 
         $latestReviewRequest = null;
 
-        return view('pages.user.portofolio.index', [
+        return view('pages.guest.portofolio.index', [
             'user' => $user,
             'chartData' => $chartData,
             'assessmentDetails' => $assessmentDetails, // List di bawah chart
-            'technicalSkills' => $technicalSkills,     // Grid Skill Teknis
-            'latestReviewRequest' => $latestReviewRequest
+            'technicalSkills' => $technicalSkills, // Grid Skill Teknis
+            'latestReviewRequest' => $latestReviewRequest,
         ]);
     }
 }

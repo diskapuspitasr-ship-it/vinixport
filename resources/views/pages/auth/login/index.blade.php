@@ -82,7 +82,7 @@
                 @endif
 
                 {{-- Demo Hint Box --}}
-                <div class="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 mb-6">
+                {{-- <div class="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 mb-6">
                     <div class="flex items-center gap-2 mb-2">
                         <span class="inline-block w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
                         <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">Demo Account</p>
@@ -96,7 +96,6 @@
                             <span>User Pass:</span>
                             <span class="text-slate-300 select-all cursor-copy">password123</span>
                         </div>
-                        {{-- Separator --}}
                         <div
                             class="mt-3 pt-3 border-t border-slate-800 text-xs text-slate-500 font-semibold uppercase tracking-wider">
                             Mentor Demo
@@ -110,7 +109,7 @@
                             <span class="text-slate-300 select-all cursor-copy">password123</span>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 {{-- Login Form --}}
                 <form action="{{ route('guest.login.store') }}" method="POST" class="space-y-5" x-data="{ loading: false }"

@@ -90,7 +90,7 @@ class AssessmentSeeder extends Seeder
 
         // 3. GENERATE NILAI DUMMY (Untuk User Demo)
         // Ambil user demo (rizki-developer) berdasarkan email dari seeder sebelumnya
-        $user = User::where('email', 'john.doe@example.com')->first();
+        $user = User::where('email', 'user@example.com')->first();
 
         // Jika user ditemukan, isi nilainya
         if ($user) {

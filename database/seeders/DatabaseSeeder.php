@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
         // 1. Buat Akun Admin
         User::create([
             'name' => 'Super Admin',
-            'email' => 'mentor@vinixport.com',
+            'email' => 'admin@example.com',
             'role' => 'admin',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('password'),
             'slug' => 'super-admin',
             'email_verified_at' => now(),
         ]);
@@ -30,10 +30,12 @@ class DatabaseSeeder extends Seeder
         // 2. Buat Akun User Demo
         $user = User::create([
             'name' => 'John Doe',
-            'email' => 'john.doe@example.com',
+            'email' => 'user@example.com',
             'role' => 'user',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('password'),
             'slug' => 'rizki-developer',
+            'bio' => 'about me here...',
+            'jabatan' => 'Fullstack Developer',
             'email_verified_at' => now(),
         ]);
 

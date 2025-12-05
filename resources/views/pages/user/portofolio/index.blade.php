@@ -8,11 +8,24 @@
         showReviewModal: false,
         isEditingBio: false,
         isEditingTitle: false,
+        isEditingSlug: false,
+        isEditingProfile: false,
         bio: '{{ $user->bio ?? '' }}',
-        title: '{{ $user->title ?? 'Fullstack Developer' }}',
+        title: '{{ $user->jabatan ?? 'Fullstack Developer' }}',
+        slug: '{{ $user->slug }}',
         paymentAmount: 150000,
         uploadingAvatar: false
-    }"
+    }" x-init="$watch('showReviewModal', value => {
+        if (value) {
+            document.body.classList.add('overflow-hidden'); // Matikan scroll body
+        } else {
+            document.body.classList.remove('overflow-hidden'); // Hidupkan kembali
+        }
+    });
+    $watch('isEditingProfile', value => { // Watcher untuk modal profile juga
+        if (value) document.body.classList.add('overflow-hidden');
+        else document.body.classList.remove('overflow-hidden');
+    })"
         class="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-blue-500 selection:text-white pt-28 pb-12 px-4 relative overflow-hidden">
 
         {{-- Background Effects --}}
@@ -27,33 +40,39 @@
             {{-- Profile Header Card --}}
             <div
                 class="bg-slate-900/60 backdrop-blur-2xl border border-slate-800 shadow-2xl rounded-2xl overflow-hidden mb-8 relative group">
+
+                {{-- 1. Top Gradient Line --}}
                 <div
-                    class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 opacity-50">
+                    class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 opacity-50 z-20">
                 </div>
 
-                <div class="h-40 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+                {{-- 2. Banner Background --}}
+                <div class="h-40 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden z-0">
                     <div
                         class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] opacity-30">
                     </div>
                     <div class="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900/90"></div>
                 </div>
 
-                <div class="px-8 pb-8">
+                <div class="px-8 pb-8 relative z-10">
+
                     <div class="flex flex-col md:flex-row items-start md:items-end -mt-16 gap-6">
-                        {{-- Avatar Section --}}
-                        <div class="relative group/avatar">
+
+                        {{-- A. AVATAR SECTION --}}
+                        <div class="relative group/avatar flex-shrink-0">
                             <div
                                 class="absolute -inset-1 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full opacity-50 blur group-hover/avatar:opacity-100 transition duration-500">
                             </div>
-                            <img class="relative w-32 h-32 rounded-full border-4 border-slate-900 bg-slate-950 object-cover shadow-xl"
+
+                            {{-- Image --}}
+                            <img class="relative w-32 h-32 rounded-full border-4 border-slate-900 bg-slate-950 object-cover shadow-xl z-20"
                                 src="{{ $user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=0D8ABC&color=fff' }}"
                                 alt="{{ $user->name }}" />
 
-                            {{-- Upload Avatar Button --}}
+                            {{-- Upload Overlay Button --}}
                             <form action="{{ route('user.profile.update') }}" method="POST" enctype="multipart/form-data"
-                                class="absolute inset-0 z-20">
-                                @csrf
-                                @method('PUT')
+                                class="absolute inset-0 z-30">
+                                @csrf @method('PUT')
                                 <label
                                     class="w-full h-full rounded-full flex items-center justify-center bg-black/50 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200 cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 20 20"
@@ -69,45 +88,125 @@
                             </form>
                         </div>
 
-                        <div class="flex-1 w-full">
+                        {{-- B. TEXT INFO SECTION --}}
+                        <div class="flex-1 w-full pt-2 md:pt-0"> {{-- pt-2 untuk jarak di mobile --}}
                             <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
-                                <div>
-                                    <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight mb-1">
-                                        {{ $user->name }}</h1>
+                                <div class="w-full">
 
-                                    {{-- Edit Title Section --}}
-                                    <div x-show="isEditingTitle" class="flex items-center gap-2 mt-2"
-                                        style="display: none;">
-                                        <form action="{{ route('user.profile.update') }}" method="POST" class="flex gap-2">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="text" name="title" x-model="title"
-                                                class="bg-slate-950 border border-slate-700 text-white px-3 py-1.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-lg">
-                                            <button type="submit"
-                                                class="text-sm bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg font-bold transition">Save</button>
-                                            <button type="button" @click="isEditingTitle = false"
-                                                class="text-sm text-slate-400 hover:text-white transition">Cancel</button>
-                                        </form>
-                                    </div>
-                                    <div x-show="!isEditingTitle" @click="isEditingTitle = true"
-                                        class="flex items-center gap-2 group/title cursor-pointer mt-1">
-                                        <p class="text-lg text-blue-400 font-medium" x-text="title"></p>
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="w-4 h-4 text-slate-600 opacity-0 group-hover/title:opacity-100 transition-opacity"
-                                            viewBox="0 0 20 20" fill="currentColor">
-                                            <path
-                                                d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                                            <path fillRule="evenodd"
-                                                d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-                                                clipRule="evenodd" />
+                                    {{-- Nama User --}}
+                                    <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight">
+                                        {{ $user->name }}
+                                    </h1>
+
+                                    {{-- Email (Read Only) --}}
+                                    <p class="text-slate-400 text-sm mb-4 flex items-center gap-2 relative z-10">
+                                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                            </path>
                                         </svg>
+                                        {{ $user->email }}
+                                    </p>
+
+                                    {{-- EDIT TITLE / JABATAN --}}
+                                    <div class="mb-3 relative z-10">
+                                        {{-- Mode Edit --}}
+                                        <div x-show="isEditingTitle" style="display: none;" class="flex items-center gap-2">
+                                            <form action="{{ route('user.profile.update') }}" method="POST"
+                                                class="flex gap-2 w-full max-w-md">
+                                                @csrf @method('PUT')
+                                                <input type="text" name="title" x-model="title"
+                                                    class="flex-1 bg-slate-950 border border-slate-700 text-white px-3 py-1.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-lg">
+                                                <button type="submit"
+                                                    class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm font-bold">Save</button>
+                                                <button type="button" @click="isEditingTitle = false"
+                                                    class="text-slate-400 hover:text-white text-sm">Cancel</button>
+                                            </form>
+                                        </div>
+                                        {{-- Mode View --}}
+                                        <div x-show="!isEditingTitle" @click="isEditingTitle = true"
+                                            class="flex items-center gap-2 group/title cursor-pointer w-fit">
+                                            <p class="text-lg text-blue-400 font-medium" x-text="title || 'Add Title'"></p>
+                                            <svg class="w-4 h-4 text-slate-600 opacity-0 group-hover/title:opacity-100 transition-opacity"
+                                                viewBox="0 0 20 20" fill="currentColor">
+                                                <path
+                                                    d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                                <path fillRule="evenodd"
+                                                    d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                                                    clipRule="evenodd" />
+                                            </svg>
+                                        </div>
                                     </div>
+
+                                    {{-- EDIT SLUG / PUBLIC URL --}}
+                                    <div
+                                        class="bg-slate-950/50 rounded-lg p-2 border border-slate-800 flex flex-wrap items-center gap-2 w-fit relative z-10">
+                                        <span
+                                            class="text-xs text-slate-500 font-semibold uppercase tracking-wider flex-shrink-0">Public
+                                            URL:</span>
+
+                                        {{-- Mode Edit Slug --}}
+                                        <div x-show="isEditingSlug" style="display: none;" class="flex items-center gap-2">
+                                            <span
+                                                class="text-slate-400 text-xs md:text-sm hidden md:inline">{{ url('/portfolio/view') }}/</span>
+                                            <form action="{{ route('user.profile.update') }}" method="POST"
+                                                class="flex items-center gap-1">
+                                                @csrf @method('PUT')
+                                                <input type="text" name="slug" x-model="slug"
+                                                    class="bg-slate-900 border border-slate-700 text-white px-2 py-1 rounded text-sm w-32 md:w-40 focus:outline-none focus:border-blue-500">
+                                                <button type="submit"
+                                                    class="p-1 text-emerald-400 hover:text-emerald-300 bg-emerald-400/10 rounded"><i
+                                                        class="fa-solid fa-check"></i></button>
+                                                <button type="button" @click="isEditingSlug = false"
+                                                    class="p-1 text-red-400 hover:text-red-300 bg-red-400/10 rounded"><i
+                                                        class="fa-solid fa-xmark"></i></button>
+                                            </form>
+                                        </div>
+
+                                        {{-- Mode Tampil Slug --}}
+                                        <div x-show="!isEditingSlug" class="flex items-center gap-2 group/slug max-w-full">
+                                            <a :href="'{{ url('/portfolio/view') }}/' + slug" target="_blank"
+                                                class="text-sm text-slate-300 hover:text-white hover:underline truncate max-w-[180px] md:max-w-xs">
+                                                <span class="hidden md:inline">{{ url('/portfolio/view') }}/</span><span
+                                                    x-text="slug" class="font-bold text-white"></span>
+                                            </a>
+                                            <div
+                                                class="flex gap-1 opacity-0 group-hover/slug:opacity-100 transition-opacity">
+                                                <button @click="isEditingSlug = true"
+                                                    class="p-1.5 text-slate-400 hover:text-blue-400 bg-slate-800 hover:bg-slate-700 rounded-md transition-colors"
+                                                    title="Edit Slug">
+                                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path
+                                                            d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                                        <path fillRule="evenodd"
+                                                            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                                                            clipRule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                    onclick="navigator.clipboard.writeText('{{ url('/portfolio/view') }}/{{ $user->slug }}'); alert('URL berhasil disalin!')"
+                                                    class="p-1.5 text-slate-400 hover:text-emerald-400 bg-slate-800 hover:bg-slate-700 rounded-md transition-colors"
+                                                    title="Copy Link">
+                                                    <i class="fa-regular fa-copy text-xs"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                                <div class="flex gap-3">
-                                    {{-- Tombol Download CV (Logic PDF sebaiknya di controller terpisah) --}}
+                                {{-- C. ACTION BUTTONS --}}
+                                <div class="flex flex-col md:flex-row gap-3 mt-4 md:mt-0 relative z-10">
+
+                                    <button @click="isEditingProfile = true"
+                                        class="flex text-nowrap justify-center items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 border border-blue-600 hover:border-blue-500 text-white rounded-xl transition-all text-sm font-bold shadow-lg hover:shadow-blue-900/30">
+                                        <i class="fa-solid fa-user-pen"></i>
+                                        <span>Edit Profile</span>
+                                    </button>
+
                                     <a href="#"
-                                        class="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-white rounded-xl transition-all text-sm font-bold shadow-lg">
+                                        class="flex text-nowrap justify-center items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-white rounded-xl transition-all text-sm font-bold shadow-lg hover:shadow-blue-900/20">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -117,6 +216,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -245,40 +345,34 @@
                                         d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                 </svg>
                             </div>
-                            <h2 class="text-xl font-bold text-white">Skills & Assessment</h2>
+                            <h2 class="text-xl font-bold text-white">Assessment Report</h2>
                         </div>
 
-                        <div class="mb-10 flex justify-center relative">
-                            {{-- Setting height is important for Chart.js responsiveness --}}
+                        {{-- <div class="mb-10 flex justify-center relative">
                             <div class="w-full max-w-md h-64 md:h-80 relative">
                                 <canvas id="skillsRadarChart"></canvas>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- 2. Skill List / Analysis Cards (Existing Code) --}}
                         <div class="space-y-4">
-                            @if (count($analysisResults) > 0)
-                                @foreach ($analysisResults as $item)
+                            @if (count($assessmentDetails) > 0)
+                                @foreach ($assessmentDetails as $item)
                                     <div
                                         class="bg-slate-950 border border-slate-800/50 p-5 rounded-xl flex flex-col gap-2 hover:border-slate-700 transition-colors">
                                         <div class="flex justify-between items-center">
-                                            {{-- Menampilkan Nama Skill (Laravel, React, dll) --}}
                                             <span
                                                 class="text-slate-200 font-bold tracking-wide">{{ $item->category }}</span>
-
-                                            {{-- Menampilkan Level (Expert, atau 90%) --}}
                                             <span
                                                 class="text-xs font-bold px-2.5 py-1 rounded-lg {{ $item->scoreClass }}">
-                                                {{ $item->displayLevel }}
+                                                {{ $item->score }}%
                                             </span>
                                         </div>
-
                                         {{-- Visual Progress Bar --}}
                                         <div class="w-full bg-slate-800 rounded-full h-1.5 mt-1 mb-1">
                                             <div class="h-1.5 rounded-full {{ str_replace('text-', 'bg-', $item->colorClass) }}"
                                                 style="width: {{ $item->score }}%"></div>
                                         </div>
-
                                         <p class="text-sm {{ $item->colorClass }} leading-relaxed">
                                             {{ $item->feedback }}
                                         </p>
@@ -286,12 +380,61 @@
                                 @endforeach
                             @else
                                 <div
-                                    class="text-center py-10 bg-slate-950/50 rounded-xl border border-dashed border-slate-800">
-                                    <p class="text-slate-400 mb-2 font-medium">Belum ada skill ditambahkan.</p>
-                                    <p class="text-sm text-slate-500">Edit profilmu untuk menambahkan skill teknis.</p>
+                                    class="text-center py-6 bg-slate-950/50 rounded-xl border border-dashed border-slate-800">
+                                    <p class="text-slate-400 text-sm">Belum ada data asesmen.</p>
                                 </div>
                             @endif
                         </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-2 bg-indigo-500/10 border border-indigo-500/20 rounded-lg">
+                                <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-xl font-bold text-white">Technical Skills</h2>
+                        </div>
+
+                        @if (count($technicalSkills) > 0)
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                @foreach ($technicalSkills as $skill)
+                                    {{-- LOGIKA WARNA BADGE --}}
+                                    @php
+                                        $badgeStyle = match ($skill->level) {
+                                            'Expert',
+                                            'Advanced'
+                                                => 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+                                            'Intermediate' => 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                                            'Beginner', 'Basic' => 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+                                            default => 'bg-slate-800 text-slate-400 border-slate-700',
+                                        };
+                                    @endphp
+
+                                    <div
+                                        class="bg-slate-900 border border-slate-800 p-4 rounded-xl hover:border-slate-700 transition flex flex-col justify-between h-full group">
+                                        <span
+                                            class="font-bold text-slate-200 text-lg group-hover:text-blue-400 transition-colors">{{ $skill->name }}</span>
+                                        <div class="mt-2">
+                                            {{-- Gunakan variable $badgeStyle di class --}}
+                                            <span
+                                                class="inline-block px-2.5 py-1 rounded-md text-xs font-semibold border {{ $badgeStyle }}">
+                                                {{ $skill->level }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            {{-- State Kosong --}}
+                            <div
+                                class="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 text-center">
+                                <p class="text-slate-400 text-sm">Belum ada skill teknis ditambahkan.</p>
+                            </div>
+                        @endif
                     </div>
 
                     {{-- Projects Section --}}
@@ -416,182 +559,11 @@
             </div>
         </div>
 
-        {{-- Review Payment Modal (Alpine.js) --}}
-        <div x-show="showReviewModal" style="display: none;"
-            class="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto">
-            <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"
-                @click="showReviewModal = false"></div>
-            <div
-                class="relative bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl shadow-2xl mt-10 mb-10 overflow-hidden">
-                <div class="p-8">
-                    {{-- Modal Header --}}
-                    <div class="text-center">
-                        <div
-                            class="mx-auto w-16 h-16 bg-indigo-500/10 rounded-full flex items-center justify-center mb-6 text-indigo-400 border border-indigo-500/20">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-2">Unlock Premium Review</h3>
-                        <p class="text-slate-400 mb-6 text-sm">Hubungkan portofoliomu dengan mentor expert.</p>
-                    </div>
+        {{-- Review Payment Modal --}}
+        @include('pages.user.portofolio.components.payment-modal')
 
-                    {{-- Pricing Box --}}
-                    <div class="bg-slate-950 rounded-xl p-5 border border-slate-800 mb-6 text-left">
-                        <div class="flex justify-between items-center mb-2 text-sm">
-                            <span class="text-slate-400">Total Biaya</span>
-                            <span class="text-xl font-bold text-white"
-                                x-text="'Rp ' + paymentAmount.toLocaleString('id-ID')"></span>
-                        </div>
-                        <p class="text-xs text-emerald-400 flex items-center gap-1">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
-                                </path>
-                            </svg>
-                            Termasuk CV Audit & 1-on-1 Chat
-                        </p>
-                    </div>
-
-                    {{-- Payment Form --}}
-                    {{-- Pastikan ada route 'user.review.store' --}}
-                    <form action="#" method="POST" enctype="multipart/form-data" class="space-y-4">
-                        @csrf
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Bank Pengirim</label>
-                            <input type="text" name="payment_bank" required
-                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Nama Pemilik Rekening</label>
-                            <input type="text" name="payment_account_name" required
-                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Nominal Transfer</label>
-                            <input type="number" name="payment_amount" x-model="paymentAmount" required
-                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Bukti Transfer</label>
-                            <input type="file" name="payment_proof" accept="image/*" required
-                                class="block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500">
-                        </div>
-
-                        <div class="flex gap-3 pt-4">
-                            <button type="button" @click="showReviewModal = false"
-                                class="flex-1 py-3 border border-slate-700 rounded-xl text-slate-400 font-bold hover:bg-slate-800 hover:text-white transition-all text-sm">
-                                Batal
-                            </button>
-                            <button type="submit"
-                                class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold shadow-lg shadow-indigo-900/30 transition-all text-sm">
-                                Bayar Sekarang
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        {{-- Edit Modal --}}
+        @include('pages.user.portofolio.components.edit-modal')
 
     </div>
 @endsection
-
-@push('scripts')
-    {{-- Load Chart.js CDN --}}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('skillsRadarChart').getContext('2d');
-
-            // Ambil data dari Controller PHP
-            const chartData = @json($chartData);
-
-            // Setup Gradient untuk background radar (opsional, agar mirip desain)
-            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)'); // Blue top
-            gradient.addColorStop(1, 'rgba(59, 130, 246, 0.1)'); // Blue bottom
-
-            new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['Soft Skills', 'Workplace Readiness', 'Digital Skills'],
-                    datasets: [{
-                        label: 'Proficiency',
-                        data: [
-                            chartData['Soft Skills'],
-                            chartData['Workplace Readiness'],
-                            chartData['Digital Skills']
-                        ],
-                        backgroundColor: 'rgba(59, 130, 246, 0.25)', // Area fill color
-                        borderColor: '#3b82f6', // Border line color (Blue-500)
-                        pointBackgroundColor: '#3b82f6',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#3b82f6',
-                        borderWidth: 2,
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            // Garis jaring-jaring (Grid)
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.1)', // Slate-400 transparent
-                                circular: false
-                            },
-                            // Garis sudut (Angle lines)
-                            angleLines: {
-                                color: 'rgba(148, 163, 184, 0.2)'
-                            },
-                            // Label text (Soft Skills, etc)
-                            pointLabels: {
-                                color: '#cbd5e1', // Slate-300
-                                font: {
-                                    size: 13,
-                                    family: "'Inter', sans-serif",
-                                    weight: '600'
-                                },
-                                backdropColor: 'transparent' // Hapus background putih default di label
-                            },
-                            // Angka scale (0, 20, 40...)
-                            ticks: {
-                                display: false, // Hide angka agar bersih seperti desain
-                                backdropColor: 'transparent',
-                                max: 100,
-                                min: 0,
-                                stepSize: 20
-                            },
-                            suggestedMin: 0,
-                            suggestedMax: 100
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false // Hide legend box "Proficiency"
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.9)', // Slate-900 tooltip
-                            titleColor: '#f8fafc',
-                            bodyColor: '#cbd5e1',
-                            borderColor: 'rgba(51, 65, 85, 1)',
-                            borderWidth: 1,
-                            padding: 12,
-                            displayColors: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return context.raw + '% Score';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        });
-    </script>
-@endpush

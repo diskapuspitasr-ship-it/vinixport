@@ -1,4 +1,4 @@
-@extends('layouts.master') {{-- Sesuaikan dengan nama layout Anda --}}
+@extends('layouts.master')
 
 @section('title', 'VinixPort - Platform Portofolio')
 
