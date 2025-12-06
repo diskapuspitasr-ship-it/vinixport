@@ -35,7 +35,7 @@
                         </div>
 
                         {{-- Logout Form (Laravel Security Best Practice) --}}
-                        <form method="POST" action="{{ route('user.logout') }}">
+                        <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="text-slate-300 hover:text-white hover:bg-red-500/10 hover:border-red-500/50 border border-transparent px-4 py-2 rounded-full text-sm font-medium transition-all duration-300">
                                 Logout
@@ -78,7 +78,8 @@
                         <li><x-nav-link href="{{ route('user.upload.index') }}" :active="request()->is('upload*')">Upload</x-nav-link></li>
                         <li><x-nav-link href="{{ route('user.analytic.index') }}" :active="request()->is('analytics*')">Analytics</x-nav-link></li>
                     @else
-                        <li><x-nav-link href="{{ url('/admin') }}" :active="request()->is('admin*')">Mentor Dashboard</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('admin.dashboard.index') }}" :active="request()->routeIs('admin.dashboard.index')">Dashboard</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')">Users</x-nav-link></li>
                     @endif
                 @endauth
             </ul>
@@ -101,7 +102,8 @@
                         <li><x-nav-link href="{{ route('user.upload.index') }}" :active="request()->is('upload*')" @click="mobileMenuOpen = false">Upload Project</x-nav-link></li>
                         <li><x-nav-link href="{{ route('user.analytic.index') }}" :active="request()->is('analytics*')" @click="mobileMenuOpen = false">Analytics</x-nav-link></li>
                     @else
-                        <li><x-nav-link href="{{ url('/admin') }}" :active="request()->is('admin*')" @click="mobileMenuOpen = false">Mentor Dashboard</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('admin.dashboard.index') }}" :active="request()->routeIs('admin.dashboard.index')" @click="mobileMenuOpen = false">Dashboard</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')" @click="mobileMenuOpen = false">Users</x-nav-link></li>
                     @endif
                 @endauth
 
@@ -112,7 +114,7 @@
                                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500"></div>
                                 <span class="text-white font-semibold">{{ Auth::user()->name }}</span>
                             </div>
-                            <form method="POST" action="{{ route('user.logout') }}">
+                            <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="w-full text-center py-3 bg-red-500/10 text-red-400 rounded-xl font-semibold border border-red-500/20 hover:bg-red-500/20 transition">
                                     Logout

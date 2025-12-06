@@ -1,4 +1,7 @@
 <?php
+
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Guest\GuestAuthController;
 use App\Http\Controllers\Guest\GuestHomeController;
 use App\Http\Controllers\Guest\GuestPortofolioController;
@@ -8,6 +11,7 @@ use App\Http\Controllers\User\UserCertificateController;
 use App\Http\Controllers\User\UserPorofileController;
 use App\Http\Controllers\User\UserPortofolioController;
 use App\Http\Controllers\User\UserProjectController;
+use App\Http\Controllers\User\UserSkillController;
 use App\Http\Controllers\User\UserUploadController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +28,11 @@ Route::middleware('guest')->group(function () {
     // Register
     Route::get('/register', [GuestAuthController::class, 'register'])->name('guest.register.index');
     Route::post('/register', [GuestAuthController::class, 'store'])->name('guest.register.store');
+});
+
+Route::middleware('auth')->group(function () {
+    // Logout ditaruh di sini agar semua role bisa akses
+    Route::post('/logout', [GuestAuthController::class, 'logout'])->name('logout');
 });
 
 // Authenticated Only (Hanya bisa diakses jika sudah login)
@@ -48,11 +57,14 @@ Route::middleware(['auth', 'role:user'])->name('user.')->group(function () {
     Route::put('/certificate/update/{id}', [UserCertificateController::class, 'update'])->name('certificate.update');
     Route::delete('/certificate/delete/{id}', [UserCertificateController::class, 'destroy'])->name('certificate.delete');
 
-    Route::post('/logout', [GuestAuthController::class, 'logout'])->name('logout');
+    Route::put('/skills/update', [UserSkillController::class, 'update'])->name('skills.update');
+
 });
 
-Route::middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
-    // Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    // Route::get('/admin/users', [AdminDashboardController::class, 'users'])->name('admin.users');
-    // ... route lain khusus admin
-});
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin') // URL diawali /admin
+    ->name('admin.')  // Nama route diawali admin.
+    ->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard.index');
+        Route::resource('users', AdminUserController::class);
+    });

@@ -35,8 +35,15 @@ class GuestAuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // --- PERBAIKAN DISINI ---
-            // Arahkan ke NAMA ROUTE dashboard user, bukan nama file view
+            // --- CEK ROLE DISINI ---
+            $user = Auth::user();
+
+            if ($user->role === 'admin') {
+                // Jika Admin, arahkan ke Dashboard Admin
+                return redirect()->intended(route('admin.dashboard.index'));
+            }
+
+            // Jika User/Mentor, arahkan ke Portfolio User
             return redirect()->intended(route('user.portfolio.index'));
         }
 

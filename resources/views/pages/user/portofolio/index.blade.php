@@ -16,6 +16,15 @@
         showCertificateModal: false,
         isEditingCertificate: false,
         selectedCertificate: null,
+        showSkillModal: false,
+        skillsList: {{ Js::from($technicalSkills ?? []) }}.map(s => ({ skill_name: s.name, level: s.level })),
+
+        addSkill() {
+            this.skillsList.push({ skill_name: '', level: 'Beginner' });
+        },
+        removeSkill(index) {
+            this.skillsList.splice(index, 1);
+        },
         bio: '{{ $user->bio ?? '' }}',
         title: '{{ $user->jabatan ?? 'Fullstack Developer' }}',
         slug: '{{ $user->slug }}',
@@ -31,7 +40,8 @@
     $watch('isEditingProfile', value => { // Watcher untuk modal profile juga
         if (value) document.body.classList.add('overflow-hidden');
         else document.body.classList.remove('overflow-hidden');
-    })"
+    });
+    $watch('showSkillModal', value => value ? document.body.classList.add('overflow-hidden') : document.body.classList.remove('overflow-hidden'))"
         class="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-blue-500 selection:text-white pt-28 pb-12 px-4 relative overflow-hidden">
 
         {{-- Background Effects --}}
@@ -394,15 +404,23 @@
                     </div>
 
                     <div>
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="p-2 bg-indigo-500/10 border border-indigo-500/20 rounded-lg">
-                                <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                                </svg>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="p-2 bg-indigo-500/10 border border-indigo-500/20 rounded-lg">
+                                    <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                    </svg>
+                                </div>
+                                <h2 class="text-xl font-bold text-white">Technical Skills</h2>
                             </div>
-                            <h2 class="text-xl font-bold text-white">Technical Skills</h2>
+
+                            {{-- Tombol Edit Skills --}}
+                            <button @click="showSkillModal = true"
+                                class="text-slate-400 hover:text-white transition bg-slate-900 border border-slate-800 hover:border-slate-700 p-2 rounded-lg">
+                                <i class="fa-solid fa-pen text-sm"></i>
+                            </button>
                         </div>
 
                         @if (count($technicalSkills) > 0)
@@ -584,6 +602,7 @@
 
         @include('pages.user.portofolio.components.project-modal')
         @include('pages.user.portofolio.components.certificate-modal')
+        @include('pages.user.portofolio.components.skill-modal')
 
     </div>
 @endsection
