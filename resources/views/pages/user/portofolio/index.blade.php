@@ -10,6 +10,12 @@
         isEditingTitle: false,
         isEditingSlug: false,
         isEditingProfile: false,
+        showProjectModal: false,
+        isEditingProject: false,
+        selectedProject: null,
+        showCertificateModal: false,
+        isEditingCertificate: false,
+        selectedCertificate: null,
         bio: '{{ $user->bio ?? '' }}',
         title: '{{ $user->jabatan ?? 'Fullstack Developer' }}',
         slug: '{{ $user->slug }}',
@@ -470,34 +476,36 @@
                             <div class="grid md:grid-cols-2 gap-6">
                                 @foreach ($user->projects as $project)
                                     {{-- Project Card Component --}}
-                                    <div
-                                        class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-slate-700 transition group">
+                                    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-slate-700 transition group relative cursor-pointer"
+                                        @click="selectedProject = {{ $project }}; isEditingProject = false; showProjectModal = true">
+
+                                        {{-- Image --}}
                                         <div class="h-40 bg-slate-800 relative overflow-hidden">
                                             <img src="{{ $project->image_path ?? 'https://via.placeholder.com/600x400' }}"
                                                 alt="{{ $project->project_title }}"
                                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                             <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent">
                                             </div>
+
+                                            {{-- Edit Button Overlay --}}
+                                            <button
+                                                @click.stop="selectedProject = {{ $project }}; isEditingProject = true; showProjectModal = true"
+                                                class="absolute top-3 flex items-center justify-center right-3 p-2 bg-slate-900/80 rounded-full text-white opacity-0 group-hover:opacity-100 transition hover:bg-blue-600">
+                                                <i class="fa-solid fa-pen-to-square text-[10px]"></i>
+                                            </button>
                                         </div>
+
                                         <div class="p-5">
                                             <h3 class="font-bold text-white mb-2">{{ $project->project_title }}</h3>
                                             <p class="text-slate-400 text-sm mb-4 line-clamp-2">
                                                 {{ $project->description }}</p>
-                                            <div class="flex flex-wrap gap-2 mb-4">
+                                            {{-- Tags --}}
+                                            <div class="flex flex-wrap gap-2">
                                                 @foreach ($project->tags ?? [] as $tag)
                                                     <span
                                                         class="px-2 py-1 bg-slate-800 text-slate-300 text-xs rounded-md border border-slate-700">{{ $tag }}</span>
                                                 @endforeach
                                             </div>
-                                            <a href="{{ $project->project_link }}" target="_blank"
-                                                class="text-blue-400 text-sm hover:text-blue-300 flex items-center gap-1">
-                                                View Project <svg class="w-3 h-3" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
-                                                    </path>
-                                                </svg>
-                                            </a>
                                         </div>
                                     </div>
                                 @endforeach
@@ -534,21 +542,30 @@
                         @else
                             <div class="grid md:grid-cols-2 gap-4">
                                 @foreach ($user->certificates as $cert)
-                                    <div
-                                        class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-4 hover:border-slate-700 transition">
-                                        <div
-                                            class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-white text-sm">{{ $cert->certificate_title }}</h4>
-                                            <p class="text-xs text-slate-400">{{ $cert->issuer_organization }} •
-                                                {{ $cert->date_issued }}</p>
-                                        </div>
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        @foreach ($user->certificates as $cert)
+                                            {{-- CERTIFICATE CARD --}}
+                                            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-4 hover:border-slate-700 transition relative group cursor-pointer"
+                                                @click="selectedCertificate = {{ $cert }}; isEditingCertificate = false; showCertificateModal = true">
+
+                                                <div
+                                                    class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                    <i class="fa-solid fa-certificate text-emerald-500 text-xl"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-bold text-white text-sm line-clamp-1">
+                                                        {{ $cert->certificate_title }}</h4>
+                                                    <p class="text-xs text-slate-400">{{ $cert->issuer_organization }}</p>
+                                                </div>
+
+                                                {{-- Edit Button --}}
+                                                <button
+                                                    @click.stop="selectedCertificate = {{ $cert }}; isEditingCertificate = true; showCertificateModal = true"
+                                                    class="absolute right-4 p-2 flex items-center justify-center text-slate-500 hover:text-blue-400 opacity-0 group-hover:opacity-100 transition">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </button>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 @endforeach
                             </div>
@@ -564,6 +581,9 @@
 
         {{-- Edit Modal --}}
         @include('pages.user.portofolio.components.edit-modal')
+
+        @include('pages.user.portofolio.components.project-modal')
+        @include('pages.user.portofolio.components.certificate-modal')
 
     </div>
 @endsection

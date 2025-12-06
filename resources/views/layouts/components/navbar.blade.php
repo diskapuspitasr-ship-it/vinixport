@@ -6,7 +6,7 @@
     <div class="container flex flex-wrap justify-between items-center mx-auto px-6">
 
         {{-- Logo Section --}}
-        <a href="{{ Auth::check() ? (Auth::user()->role === 'mentor' ? url('/mentor') : url('/portfolio')) : url('/') }}"
+        <a href="{{ Auth::check() ? (Auth::user()->role === 'admin' ? url('/admin') : url('/portfolio')) : url('/') }}"
            class="flex items-center gap-3 group">
 
             {{-- Logo Icon (Inline SVG) --}}
@@ -30,7 +30,7 @@
                     {{-- Logged In View --}}
                     <div class="flex items-center gap-4 pl-4 border-l border-slate-800">
                         <div class="text-right hidden lg:block">
-                            <p class="text-xs text-slate-400">Signed in as {{ Auth::user()->role === 'mentor' ? 'Mentor' : 'User' }}</p>
+                            <p class="text-xs text-slate-400">Signed in as {{ Auth::user()->role === 'admin' ? 'Admin' : 'User' }}</p>
                             <p class="text-sm font-bold text-white">{{ explode(' ', Auth::user()->name)[0] }}</p>
                         </div>
 
@@ -75,10 +75,10 @@
                     @if(Auth::user()->role !== 'admin')
                         <li><x-nav-link href="{{ route('user.assessment.index') }}" :active="request()->is('assessment*')">Assessment</x-nav-link></li>
                         <li><x-nav-link href="{{ route('user.portfolio.index') }}" :active="request()->is('portfolio*')">Portfolio</x-nav-link></li>
-                        <li><x-nav-link href="{{ url('/upload') }}" :active="request()->is('upload*')">Upload</x-nav-link></li>
-                        <li><x-nav-link href="{{ url('/analytics') }}" :active="request()->is('analytics*')">Analytics</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('user.upload.index') }}" :active="request()->is('upload*')">Upload</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('user.analytic.index') }}" :active="request()->is('analytics*')">Analytics</x-nav-link></li>
                     @else
-                        <li><x-nav-link href="{{ url('/mentor') }}" :active="request()->is('mentor*')">Mentor Dashboard</x-nav-link></li>
+                        <li><x-nav-link href="{{ url('/admin') }}" :active="request()->is('admin*')">Mentor Dashboard</x-nav-link></li>
                     @endif
                 @endauth
             </ul>
@@ -98,10 +98,10 @@
                     @if(Auth::user()->role !== 'admin')
                         <li><x-nav-link href="{{ route('user.assessment.index') }}" :active="request()->is('assessment*')" @click="mobileMenuOpen = false">Skill Assessment</x-nav-link></li>
                         <li><x-nav-link href="{{ route('user.portfolio.index') }}" :active="request()->is('portfolio*')" @click="mobileMenuOpen = false">My Portfolio</x-nav-link></li>
-                        <li><x-nav-link href="{{ url('/upload') }}" :active="request()->is('upload*')" @click="mobileMenuOpen = false">Upload Project</x-nav-link></li>
-                        <li><x-nav-link href="{{ url('/analytics') }}" :active="request()->is('analytics*')" @click="mobileMenuOpen = false">Analytics</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('user.upload.index') }}" :active="request()->is('upload*')" @click="mobileMenuOpen = false">Upload Project</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('user.analytic.index') }}" :active="request()->is('analytics*')" @click="mobileMenuOpen = false">Analytics</x-nav-link></li>
                     @else
-                        <li><x-nav-link href="{{ url('/mentor') }}" :active="request()->is('mentor*')" @click="mobileMenuOpen = false">Mentor Dashboard</x-nav-link></li>
+                        <li><x-nav-link href="{{ url('/admin') }}" :active="request()->is('admin*')" @click="mobileMenuOpen = false">Mentor Dashboard</x-nav-link></li>
                     @endif
                 @endauth
 
