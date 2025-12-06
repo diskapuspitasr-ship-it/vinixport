@@ -80,6 +80,7 @@
                     @else
                         <li><x-nav-link href="{{ route('admin.dashboard.index') }}" :active="request()->routeIs('admin.dashboard.index')">Dashboard</x-nav-link></li>
                         <li><x-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')">Users</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('admin.assessments.index') }}" :active="request()->routeIs('admin.assessments.*')">Assessments</x-nav-link></li>
                     @endif
                 @endauth
             </ul>
@@ -104,6 +105,7 @@
                     @else
                         <li><x-nav-link href="{{ route('admin.dashboard.index') }}" :active="request()->routeIs('admin.dashboard.index')" @click="mobileMenuOpen = false">Dashboard</x-nav-link></li>
                         <li><x-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')" @click="mobileMenuOpen = false">Users</x-nav-link></li>
+                        <li><x-nav-link href="{{ route('admin.assessments.index') }}" :active="request()->routeIs('admin.assessments.*')" @click="mobileMenuOpen = false">Assessments</x-nav-link></li>
                     @endif
                 @endauth
 

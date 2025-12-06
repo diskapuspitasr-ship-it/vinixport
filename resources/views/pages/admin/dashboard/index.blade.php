@@ -120,11 +120,11 @@
                     <div class="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-2xl p-6">
                         <h3 class="text-lg font-bold text-white mb-4">Quick Actions</h3>
                         <div class="space-y-3">
-                            <button
+                            <a href="{{ route('admin.users.index') }}"
                                 class="w-full py-3 px-4 bg-slate-950 hover:bg-slate-900 border border-slate-700 rounded-xl text-slate-300 text-sm font-medium flex items-center justify-between transition group">
                                 <span>Manage Users</span>
                                 <i class="fa-solid fa-arrow-right text-slate-600 group-hover:text-white transition"></i>
-                            </button>
+                            </a>
                             <button
                                 class="w-full py-3 px-4 bg-slate-950 hover:bg-slate-900 border border-slate-700 rounded-xl text-slate-300 text-sm font-medium flex items-center justify-between transition group">
                                 <span>Add New Assessment Question</span>

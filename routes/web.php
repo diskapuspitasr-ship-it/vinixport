@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAssessmentController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Guest\GuestAuthController;
@@ -67,4 +68,5 @@ Route::middleware(['auth', 'role:admin'])
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard.index');
         Route::resource('users', AdminUserController::class);
+        Route::resource('assessments', AdminAssessmentController::class);
     });
