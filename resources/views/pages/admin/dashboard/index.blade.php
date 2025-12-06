@@ -125,11 +125,11 @@
                                 <span>Manage Users</span>
                                 <i class="fa-solid fa-arrow-right text-slate-600 group-hover:text-white transition"></i>
                             </a>
-                            <button
+                            <a href="{{ route('admin.assessments.index') }}"
                                 class="w-full py-3 px-4 bg-slate-950 hover:bg-slate-900 border border-slate-700 rounded-xl text-slate-300 text-sm font-medium flex items-center justify-between transition group">
                                 <span>Add New Assessment Question</span>
                                 <i class="fa-solid fa-plus text-slate-600 group-hover:text-emerald-400 transition"></i>
-                            </button>
+                            </a>
                             <button
                                 class="w-full py-3 px-4 bg-slate-950 hover:bg-slate-900 border border-slate-700 rounded-xl text-slate-300 text-sm font-medium flex items-center justify-between transition group">
                                 <span>Review Reports</span>

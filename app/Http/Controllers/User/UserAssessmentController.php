@@ -13,7 +13,7 @@ class UserAssessmentController extends Controller
     public function index()
     {
         // 1. Ambil semua pertanyaan
-        $questions = Assessment::select('id', 'question', 'type')->orderBy('type', 'asc')->get();
+        $questions = Assessment::select('id', 'question', 'type')->orderBy('type', 'asc')->orderBy('created_at', 'desc')->get();
 
         // 2. Hitung total pertanyaan
         $totalQuestions = $questions->count();

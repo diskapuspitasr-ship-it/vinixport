@@ -11,7 +11,7 @@ class AdminAssessmentController extends Controller
     public function index()
     {
         // Ambil data terbaru dengan pagination
-        $assessments = Assessment::orderBy('type', 'asc')->paginate(10);
+        $assessments = Assessment::orderBy('type', 'asc')->orderBy('created_at', 'desc')->paginate(10);
 
         return view('pages.admin.assessments.index', compact('assessments'));
     }
@@ -20,7 +20,7 @@ class AdminAssessmentController extends Controller
     {
         $request->validate([
             'question' => 'required|string',
-            'type'     => 'required|in:soft_skill,digital_skill,workplace_readiness',
+            'type' => 'required|in:soft_skill,digital_skill,workplace_readiness',
         ]);
 
         Assessment::create($request->all());
@@ -34,7 +34,7 @@ class AdminAssessmentController extends Controller
 
         $request->validate([
             'question' => 'required|string',
-            'type'     => 'required|in:soft_skill,digital_skill,workplace_readiness',
+            'type' => 'required|in:soft_skill,digital_skill,workplace_readiness',
         ]);
 
         $assessment->update($request->all());
