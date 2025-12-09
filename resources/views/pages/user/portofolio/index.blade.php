@@ -5,7 +5,7 @@
 @section('content')
     {{-- x-data untuk Global State halaman ini --}}
     <div x-data="{
-        showReviewModal: false,
+        {{-- showReviewModal: false, --}}
         isEditingBio: false,
         isEditingTitle: false,
         isEditingSlug: false,
@@ -28,15 +28,9 @@
         bio: '{{ $user->bio ?? '' }}',
         title: '{{ $user->jabatan ?? 'Fullstack Developer' }}',
         slug: '{{ $user->slug }}',
-        paymentAmount: 150000,
+        {{-- paymentAmount: 150000, --}}
         uploadingAvatar: false
-    }" x-init="$watch('showReviewModal', value => {
-        if (value) {
-            document.body.classList.add('overflow-hidden'); // Matikan scroll body
-        } else {
-            document.body.classList.remove('overflow-hidden'); // Hidupkan kembali
-        }
-    });
+    }" x-init="
     $watch('isEditingProfile', value => { // Watcher untuk modal profile juga
         if (value) document.body.classList.add('overflow-hidden');
         else document.body.classList.remove('overflow-hidden');
@@ -244,7 +238,7 @@
                 <div class="lg:col-span-1 space-y-6">
 
                     {{-- Premium Mentor Card --}}
-                    <div
+                    {{-- <div
                         class="relative bg-gradient-to-br from-indigo-950 to-slate-900 border border-indigo-500/30 p-6 rounded-2xl overflow-hidden group hover:border-indigo-500/60 transition-all shadow-lg">
                         <div
                             class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none">
@@ -271,10 +265,10 @@
                                 Review Sekarang
                             </button>
                         </div>
-                    </div>
+                    </div> --}}
 
                     {{-- Status Review (Jika ada) --}}
-                    @if ($latestReviewRequest)
+                    {{-- @if ($latestReviewRequest)
                         <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-5 text-sm">
                             <h3 class="text-sm font-bold text-white mb-1">Status Premium Review</h3>
                             <p class="text-xs text-slate-500 mb-2">Terakhir update:
@@ -283,7 +277,7 @@
                                     class="font-semibold capitalize">{{ str_replace('_', ' ', $latestReviewRequest->status) }}</span>
                             </p>
                         </div>
-                    @endif
+                    @endif --}}
 
                     {{-- About Me --}}
                     <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-6">
@@ -595,7 +589,7 @@
         </div>
 
         {{-- Review Payment Modal --}}
-        @include('pages.user.portofolio.components.payment-modal')
+        {{-- @include('pages.user.portofolio.components.payment-modal') --}}
 
         {{-- Edit Modal --}}
         @include('pages.user.portofolio.components.edit-modal')
