@@ -84,7 +84,7 @@
                                 {{-- C. Action Buttons --}}
                                 <div class="flex gap-3 relative z-10">
                                     {{-- Tombol Download CV --}}
-                                    <a href="#"
+                                    <a href="{{ route('portfolio.download', ['userId' => $user->id]) }}"
                                         class="flex text-nowrap items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-white rounded-xl transition-all text-sm font-bold shadow-lg hover:shadow-blue-900/20">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

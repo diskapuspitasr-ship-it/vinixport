@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminAssessmentController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\Guest\GuestAuthController;
 use App\Http\Controllers\Guest\GuestHomeController;
 use App\Http\Controllers\Guest\GuestPortofolioController;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 // Halaman Utama
 Route::get('/', [GuestHomeController::class, 'index'])->name('guest.dashboard');
 Route::get('/portfolio/view/{slug}', [GuestPortofolioController::class, 'index'])->name('guest.portofolio.index');
+Route::get('/portfolio/download-pdf/{userId}', [ExportController::class, 'exportPdf'])->name('portfolio.download');
 
 // Guest Only (Hanya bisa diakses jika belum login)
 Route::middleware('guest')->group(function () {
