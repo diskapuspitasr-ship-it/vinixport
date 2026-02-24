@@ -599,4 +599,4 @@
         @include('pages.user.portofolio.components.skill-modal')
 
     </div>
-@endsection
+@endsection 
